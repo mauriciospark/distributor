@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+   <!--
+  ============================================================================
+  PROPRIETÁRIO: Mauricio Spark
+  MARCA:        SparkMauricio
+  PROJETO:      Distribuidora
+  VERSÃO:       v1.0.0
+  LINHAGEM:     SPARK
+  ============================================================================
+  Documento de Planejamento de Escopo
+  COPYRIGHT: © 2026 / Mauricio Spark. Todos os direitos reservados.
+  ============================================================================
+-->
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Distribuidora</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="./favicon/web-app-manifest-512x512.png" alt="Logo" style="width: 50px; height: 50px;">
+        <div>
+          <h1>Distribuidora Pro</h1>
+          <p>Gás • Água • Mercado</p>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <button class="menu-btn active" data-tab="estoque">Estoque</button>
+        <button class="menu-btn" data-tab="pdv">Vendas (PDV)</button>
+        <button class="menu-btn" data-tab="vendas">Vendas Emitidas</button>
+        <button class="menu-btn" data-tab="cascos">Cascos & Vasilhames</button>
+        <button class="menu-btn" data-tab="config">Configurações</button>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <h2 id="page-title">Controle de Estoque</h2>
+          <p id="page-help" class="page-help"></p>
+        </div>
+        <div class="topbar-actions">
+          <input id="search-input" type="search" placeholder="Buscar item..." />
+          <button id="btn-novo-item" class="btn primary">+ Novo Item</button>
+        </div>
+      </header>
+
+      <!-- ABA ESTOQUE -->
+      <section id="tab-estoque" class="tab active">
+        <div class="kpis">
+          <div class="kpi-card">
+            <span>Total de Itens</span>
+            <strong id="kpi-total-itens">0</strong>
+          </div>
+          <div class="kpi-card">
+            <span>Estoque Baixo</span>
+            <strong id="kpi-baixo-estoque" class="warn">0</strong>
+          </div>
+          <div class="kpi-card">
+            <span>Valor em Estoque (Venda)</span>
+            <strong id="kpi-valor-venda">R$ 0,00</strong>
+          </div>
+        </div>
+
+        <div class="filters" id="category-filters">
+          <button class="chip active" data-cat="todos">Todos</button>
+          <button class="chip" data-cat="gas">Gás</button>
+          <button class="chip" data-cat="agua">Água</button>
+          <button class="chip" data-cat="mercado">Mercado</button>
+          <button class="chip" data-cat="padaria">Padaria</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Categoria</th>
+                <th>Qtd</th>
+                <th>Custo</th>
+                <th>Venda</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="estoque-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ABA PDV -->
+      <section id="tab-pdv" class="tab">
+        <div class="pdv-grid">
+          <div class="pdv-catalog" id="pdv-catalog"></div>
+          <div class="pdv-cart">
+            <h3>Venda Atual</h3>
+            <div id="cart-list" class="cart-list"></div>
+            <div class="cart-footer">
+              <div class="total-line">
+                <span>Total</span>
+                <strong id="cart-total">R$ 0,00</strong>
+              </div>
+              <select id="payment-method">
+                <option value="Pix">Pix</option>
+                <option value="Dinheiro">Dinheiro</option>
+                <option value="Cartão">Cartão</option>
+              </select>
+              <button id="btn-finalizar-venda" class="btn primary full">Finalizar Venda</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA CONFIGURAÇÕES -->
+      <section id="tab-config" class="tab">
+        <div class="config-container">
+          <h3>Dados do Comércio</h3>
+          <p class="config-subtitle">Informações que aparecem no comprovante de venda</p>
+          <form id="form-config" class="config-form">
+            <label>
+              Nome do Comércio
+              <input type="text" id="config-nome" required placeholder="Ex: Distribuidora Pro" />
+            </label>
+            <label>
+              CNPJ
+              <input type="text" id="config-cnpj" required placeholder="00.000.000/0001-00" />
+            </label>
+            <label>
+              Endereço
+              <input type="text" id="config-endereco" required placeholder="Rua, número, bairro" />
+            </label>
+            <label>
+              Telefone
+              <input type="text" id="config-telefone" required placeholder="(00) 0000-0000" />
+            </label>
+            <div class="modal-actions">
+              <button type="submit" class="btn primary">Salvar Configurações</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ABA VENDAS EMITIDAS -->
+      <section id="tab-vendas" class="tab">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Total</th>
+                <th>Pagamento</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="vendas-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ABA CASCOS -->
+      <section id="tab-cascos" class="tab">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Vasilhame</th>
+                <th>Cheios</th>
+                <th>Vazios na Base</th>
+                <th>Com Clientes</th>
+                <th>Movimentar</th>
+              </tr>
+            </thead>
+            <tbody id="cascos-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL COMPROVANTE DE VENDA -->
+  <dialog id="modal-nota-fiscal">
+    <div class="nota-fiscal-content">
+      <div class="nota-fiscal-header">
+        <h2>COMPROVANTE DE VENDA</h2>
+        <p class="nf-aviso">Documento sem valor fiscal</p>
+        <p class="nf-numero">Nº: <span id="nf-numero"></span></p>
+        <p class="nf-data">Data: <span id="nf-data"></span></p>
+      </div>
+      <div class="nf-section" id="nf-emitente">
+        <!-- Preenchido automaticamente com os dados de Configurações -->
+      </div>
+      <div class="nf-section">
+        <h3>Itens da Venda</h3>
+        <table class="nf-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qtd</th>
+              <th>Unitário</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="nf-itens"></tbody>
+        </table>
+      </div>
+      <div class="nf-total">
+        <span>Total da Venda:</span>
+        <strong id="nf-total"></strong>
+      </div>
+      <div class="nf-payment">
+        <span>Forma de Pagamento:</span>
+        <strong id="nf-pagamento"></strong>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="btn-fechar-nf" class="btn">Fechar</button>
+        <button type="button" id="btn-imprimir-nf" class="btn primary">Imprimir</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- MODAL CADASTRO -->
+  <dialog id="modal-item">
+    <form id="form-item" method="dialog" class="modal-box">
+      <h3 id="modal-item-title">Novo Item</h3>
+      <input type="hidden" name="edit-id" id="edit-id" />
+      <label>
+        Nome
+        <input type="text" name="name" required placeholder="Ex: Botijão P13 ou Galão 20L" />
+      </label>
+      <label>
+        Categoria
+        <select name="category" required>
+          <option value="gas">Gás</option>
+          <option value="agua">Água</option>
+          <option value="mercado">Mercado</option>
+          <option value="padaria">Padaria</option>
+        </select>
+      </label>
+      <div class="row-2">
+        <label>
+          Quantidade
+          <input type="number" name="quantity" min="0" required value="10" />
+        </label>
+        <label>
+          Estoque Mínimo
+          <input type="number" name="minStock" min="0" required value="3" />
+        </label>
+      </div>
+      <div class="row-2">
+        <label>
+          Custo (R$)
+          <input type="number" name="cost" step="0.01" min="0" required value="0.00" />
+        </label>
+        <label>
+          Preço de Venda (R$)
+          <input type="number" name="price" step="0.01" min="0" required value="0.00" />
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="btn-cancelar-modal" class="btn">Cancelar</button>
+        <button type="submit" class="btn primary">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="./javascript/script.js"></script>
+</body>
+</html>
