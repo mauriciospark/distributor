@@ -343,7 +343,16 @@ function abrirEdicao(id) {
   form.minStock.value = item.minStock;
   form.cost.value = item.cost;
   form.price.value = item.price;
+  $("btn-excluir-item").style.display = "block";
   $("modal-item").showModal();
+}
+
+function excluirItem(id) {
+  if (!confirm("Tem certeza que deseja excluir este produto?")) return;
+  data.items = data.items.filter((i) => !mesmoId(i.id, id));
+  salvarDados();
+  $("modal-item").close();
+  renderTudo();
 }
 
 /* ---------- 5. TELAS (RENDER) ---------- */
@@ -573,11 +582,16 @@ $("btn-novo-item").addEventListener("click", () => {
   $("modal-item-title").textContent = "Novo Item";
   $("edit-id").value = "";
   $("form-item").reset();
+  $("btn-excluir-item").style.display = "none";
   $("modal-item").showModal();
 });
 $("btn-cancelar-modal").addEventListener("click", () =>
   $("modal-item").close(),
 );
+$("btn-excluir-item").addEventListener("click", () => {
+  const editId = $("edit-id").value;
+  if (editId) excluirItem(editId);
+});
 
 $("form-item").addEventListener("submit", (e) => {
   e.preventDefault();
