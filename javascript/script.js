@@ -51,6 +51,11 @@ const TELAS = {
     busca: false,
     ajuda: "Dados do comércio que saem impressos no comprovante.",
   },
+  relatorios: {
+    titulo: "Relatórios",
+    busca: false,
+    ajuda: "Relatórios de vendas por dia e por mês para análise financeira.",
+  },
 };
 
 /* ---------- 2. DADOS E ARMAZENAMENTO ---------- */
@@ -452,6 +457,102 @@ function renderVendas() {
     : `<tr><td colspan="4">Nenhuma venda registrada.</td></tr>`;
 }
 
+function filtrarVendasPorPeriodo(horas) {
+  const agora = new Date();
+  const limite = new Date(agora.getTime() - horas * 60 * 60 * 1000);
+  return data.sales.filter((s) => new Date(s.date) >= limite);
+}
+
+function atualizarResumoRelatorios() {
+  const vendasDia = filtrarVendasPorPeriodo(24);
+  const vendasMes = filtrarVendasPorPeriodo(24 * 30);
+
+  const totalDia = vendasDia.reduce((acc, s) => acc + s.total, 0);
+  const totalMes = vendasMes.reduce((acc, s) => acc + s.total, 0);
+
+  $("report-dia-quantidade").textContent = vendasDia.length;
+  $("report-dia-total").textContent = formatarReal(totalDia);
+  $("report-mes-quantidade").textContent = vendasMes.length;
+  $("report-mes-total").textContent = formatarReal(totalMes);
+}
+
+function gerarRelatorioHTML(vendas, titulo) {
+  if (!vendas.length) {
+    return `<p class="empty-msg">Nenhuma venda encontrada neste período.</p>`;
+  }
+
+  const total = vendas.reduce((acc, s) => acc + s.total, 0);
+
+  let html = `
+    <div class="report-header">
+      <h3>${titulo}</h3>
+      <p class="report-info">Total de vendas: ${vendas.length} | Faturamento: ${formatarReal(total)}</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data/Hora</th>
+            <th>Itens</th>
+            <th>Total</th>
+            <th>Pagamento</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  html += vendas
+    .map((s) => {
+      const itens = s.items.map((i) => `${i.qty}x ${i.name}`).join(", ");
+      return `
+        <tr>
+          <td>${new Date(s.date).toLocaleString("pt-BR")}</td>
+          <td>${escapar(itens)}</td>
+          <td>${formatarReal(s.total)}</td>
+          <td>${escapar(s.paymentMethod)}</td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  html += `
+        </tbody>
+      </table>
+    </div>
+    <div class="report-actions">
+      <button class="btn" onclick="imprimirRelatorio()">Imprimir</button>
+      <button class="btn" onclick="fecharRelatorio()">Fechar</button>
+    </div>
+  `;
+
+  return html;
+}
+
+function gerarRelatorioDia() {
+  const vendas = filtrarVendasPorPeriodo(24);
+  const titulo = `Relatório do Dia - ${new Date().toLocaleDateString("pt-BR")}`;
+  $("report-details").innerHTML = gerarRelatorioHTML(vendas, titulo);
+}
+
+function gerarRelatorioMes() {
+  const vendas = filtrarVendasPorPeriodo(24 * 30);
+  const titulo = `Relatório do Mês - Últimos 30 dias`;
+  $("report-details").innerHTML = gerarRelatorioHTML(vendas, titulo);
+}
+
+function fecharRelatorio() {
+  $("report-details").innerHTML = "";
+}
+
+function imprimirRelatorio() {
+  window.print();
+}
+
+window.gerarRelatorioDia = gerarRelatorioDia;
+window.gerarRelatorioMes = gerarRelatorioMes;
+window.fecharRelatorio = fecharRelatorio;
+window.imprimirRelatorio = imprimirRelatorio;
+
 function renderCascos() {
   $("cascos-tbody").innerHTML = data.cascos
     .map(
@@ -480,6 +581,7 @@ function renderTudo() {
   renderPDV();
   renderVendas();
   renderCascos();
+  atualizarResumoRelatorios();
 }
 
 function mostrarComprovante(venda) {
@@ -532,6 +634,7 @@ function abrirTela(tela) {
   $("search-input").style.display = info.busca ? "block" : "none";
 
   if (tela === "config") preencherConfig();
+  if (tela === "relatorios") atualizarResumoRelatorios();
   renderTudo();
 }
 

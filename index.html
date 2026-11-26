@@ -34,6 +34,7 @@
         <button class="menu-btn active" data-tab="estoque">Estoque</button>
         <button class="menu-btn" data-tab="pdv">Vendas (PDV)</button>
         <button class="menu-btn" data-tab="vendas">Vendas Emitidas</button>
+        <button class="menu-btn" data-tab="relatorios">Relatórios</button>
         <button class="menu-btn" data-tab="cascos">Cascos & Vasilhames</button>
         <button class="menu-btn" data-tab="config">Configurações</button>
       </nav>
@@ -114,6 +115,45 @@
               <button id="btn-finalizar-venda" class="btn primary full">Finalizar Venda</button>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- ABA RELATÓRIOS -->
+      <section id="tab-relatorios" class="tab">
+        <div class="reports-container">
+          <div class="report-cards">
+            <div class="report-card">
+              <h3>Relatório do Dia</h3>
+              <p class="report-subtitle">Vendas das últimas 24 horas</p>
+              <div class="report-stats">
+                <div class="stat-item">
+                  <span>Total de Vendas</span>
+                  <strong id="report-dia-quantidade">0</strong>
+                </div>
+                <div class="stat-item">
+                  <span>Faturamento Total</span>
+                  <strong id="report-dia-total">R$ 0,00</strong>
+                </div>
+              </div>
+              <button class="btn primary full" onclick="gerarRelatorioDia()">Gerar Relatório</button>
+            </div>
+            <div class="report-card">
+              <h3>Relatório do Mês</h3>
+              <p class="report-subtitle">Vendas dos últimos 30 dias</p>
+              <div class="report-stats">
+                <div class="stat-item">
+                  <span>Total de Vendas</span>
+                  <strong id="report-mes-quantidade">0</strong>
+                </div>
+                <div class="stat-item">
+                  <span>Faturamento Total</span>
+                  <strong id="report-mes-total">R$ 0,00</strong>
+                </div>
+              </div>
+              <button class="btn primary full" onclick="gerarRelatorioMes()">Gerar Relatório</button>
+            </div>
+          </div>
+          <div id="report-details" class="report-details"></div>
         </div>
       </section>
 
